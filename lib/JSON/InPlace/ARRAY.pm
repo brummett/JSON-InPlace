@@ -3,7 +3,7 @@ use warnings;
 
 package JSON::InPlace::ARRAY;
 
-use Carp qw(croak);
+use JSON::InPlace::BaseHandler;
 
 sub TIEARRAY {
     my($class, %params) = @_;
@@ -12,19 +12,6 @@ sub TIEARRAY {
     _validate_constructor_params($self);
     return $self;
 }
-
-sub _validate_constructor_params {
-    my $params = shift;
-
-    unless ($params->{data} and ref($params->{data}) eq 'ARRAY') {
-        croak(q(Expected ARRAY ref for param 'data', but got ).ref($params->{data}));
-    }
-    unless ($params->{inplace_obj}) {
-        croak('inplace_obj is a required param');
-    }
-}
-
-sub _reencode { shift->{inplace_obj}->encode }
 
 sub FETCH {
     my($self, $idx) = @_;
