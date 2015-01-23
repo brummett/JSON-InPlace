@@ -7,9 +7,11 @@ use Carp qw(croak);
 use JSON;
 use Symbol;
 use overload '@{}' => '_arrayref',
+             '%{}' => '_hashref',
              'bool' => sub { 1 };
 
 use JSON::InPlace::ARRAY;
+use JSON::InPlace::HASH;
 
 sub new {
     my($class, $ref) = @_;
@@ -21,7 +23,8 @@ sub new {
         *$self = [];
         tie @{*{$self}{ARRAY}}, 'JSON::InPlace::ARRAY', data => $data, inplace_obj => $self;
     } else {
-        %$self = $data;
+        *$self = {};
+        tie %{*{$self}{HASH}}, 'JSON::InPlace::HASH', data => $data, inplace_obj => $self;
     }
 
     *$self = $ref;
@@ -88,6 +91,11 @@ sub _validate_string_ref {
 sub _arrayref {
     my $self = shift;
     return *{$self}{ARRAY};
+}
+
+sub _hashref {
+    my $self = shift;
+    return *{$self}{HASH};
 }
 
 1;
