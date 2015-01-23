@@ -52,12 +52,31 @@ sub encode {
 sub _validate_string_ref {
     my $ref = shift;
 
-    unless (ref($ref) eq 'SCALAR') {
-        croak('Expected SCALAR ref, but got ',ref($ref));
+    unless (ref $ref eq 'SCALAR') {
+        my $error = 'Expected SCALAR ref, but got ';
+        if (! defined $ref) {
+            $error .= '<undef>';
+        } elsif (! length $ref) {
+            $error .= '<empty string>';
+        } elsif (! ref $ref) {
+            $error .= $ref;
+        } else {
+            $error .= ref($ref) . ' ref';
+        }
+        croak $error;
     }
     unless (length $$ref) {
         croak('SCALAR ref must point to a non-empty string');
     }
+    my $error = do {
+        local $@;
+        eval { $$ref .= '' };
+        $@;
+    };
+    if ($error) {
+        croak('SCALAR ref is not writable');
+    }
+
     my $data = codec()->decode($$ref);
 
     unless (ref($data) eq 'ARRAY' or ref($data) eq 'HASH') {
