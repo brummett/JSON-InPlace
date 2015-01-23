@@ -8,7 +8,7 @@ use Carp qw(croak);
 sub TIEARRAY {
     my($class, %params) = @_;
 
-    my $self = \%params;
+    my $self = bless \%params, $class;
     _validate_constructor_params($self);
     return $self;
 }

@@ -27,11 +27,11 @@ subtest 'encode array' => sub {
 subtest 'change array' => sub {
         plan tests => 5;
 
-    my $expected = [ 1, 2, 3, 4 ];
+    my $expected = [ "1", "2", "3", "4" ];
     my $string = $codec->encode($expected);
     my $obj = JSON::InPlace->new(\$string);
 
-    $obj->[0] = $expected->[9] = 'hi';
+    $obj->[0] = $expected->[0] = 'hi';
     is($string,
        $codec->encode($expected),
        'change 0th element');

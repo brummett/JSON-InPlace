@@ -15,7 +15,7 @@ sub new {
     my($class, $ref) = @_;
 
     my $data = _validate_string_ref($ref);
-    my $self = bless Symbol::gensym(), $class;
+    my $self = bless(Symbol::gensym(), $class);
 
     if (ref($data) eq 'ARRAY') {
         *{$self} = [];
@@ -24,7 +24,7 @@ sub new {
         %$self = $data;
     }
 
-    $$self = $ref;
+    *$self = $ref;
     return $self;
 }
 
@@ -46,7 +46,9 @@ sub encode {
             ? *{$self}{ARRAY}
             : *{$self}{HASH};
 
-    $$self = $self->codec->encode($it);
+    my $encoded = $self->codec->encode($it);
+    my $ref = *{$self}{SCALAR};
+    $$ref = $encoded;
 }
 
 sub _validate_string_ref {
