@@ -6,7 +6,14 @@ package JSON::InPlace::BaseHandler;
 use Carp qw(croak);
 use Exporter qw(import);
 
-our @EXPORT = qw(_validate_constructor_params _reencode);
+our @EXPORT = qw(_basic_constructor _reencode);
+
+sub _basic_constructor {
+    my($class, %params) = @_;
+
+    _validate_constructor_params(\%params);
+    return bless \%params, $class;
+}
 
 sub _validate_constructor_params {
     my $params = shift;

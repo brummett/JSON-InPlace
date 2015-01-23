@@ -5,12 +5,8 @@ package JSON::InPlace::ARRAY;
 
 use JSON::InPlace::BaseHandler;
 
-sub TIEARRAY {
-    my($class, %params) = @_;
-
-    my $self = bless \%params, $class;
-    _validate_constructor_params($self);
-    return $self;
+BEGIN {
+    *TIEARRAY = \&_basic_constructor;
 }
 
 sub FETCH {
