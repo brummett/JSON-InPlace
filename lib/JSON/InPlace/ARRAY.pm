@@ -69,25 +69,44 @@ sub CLEAR {
 
 sub PUSH {
     my $self = shift;
-    return push @{$self->{data}}, @_;
+    my $rv = push @{$self->{data}}, @_;
+    $self->_reencode;
+    return $rv;
 }
 
 sub POP {
-    return pop @{shift->{data}};
+    my $self = shift;
+    my $rv = pop @{$self->{data}};
+    $self->_reencode;
+    return $rv;
 }
 
 sub SHIFT {
-    return shift @{shift->{data}};
+    my $self = shift;
+    my $rv = shift @{$self->{data}};
+    $self->_reencode;
+    return $rv;
 }
 
 sub UNSHIFT {
     my $self = shift;
-    return unshift @{$self->{data}}, @_;
+    my $rv = unshift @{$self->{data}}, @_;
+    $self->_reencode;
+    return $rv;
 }
 
 sub SPLICE {
     my $self = shift;
-    return splice @{$self}, @_;
+    my @rv;
+    if (wantarray) {
+        @rv = splice @{$self}, @_;
+    } else {
+        $rv[0] = splice @{$self}, @_;
+    }
+
+    $self->_reencode;
+
+    return( wantarray ? @rv : $rv[0] );
 }
 
 1;    
