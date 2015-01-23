@@ -18,7 +18,7 @@ sub new {
     my $self = bless(Symbol::gensym(), $class);
 
     if (ref($data) eq 'ARRAY') {
-        *{$self} = [];
+        *$self = [];
         tie @{*{$self}{ARRAY}}, 'JSON::InPlace::ARRAY', data => $data, inplace_obj => $self;
     } else {
         %$self = $data;
