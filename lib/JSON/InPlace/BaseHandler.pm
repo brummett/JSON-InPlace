@@ -4,26 +4,34 @@ use warnings;
 package JSON::InPlace::BaseHandler;
 
 use Carp qw(croak);
-use Exporter qw(import);
+use Sub::Exporter -setup => {
+    exports => [
+        '_reencode',
+        'constructor' => \&build_constructor,
+    ]
+};
 
-our @EXPORT = qw(_basic_constructor _reencode);
+sub build_constructor {
+    my($class, $name, $args) = @_;
 
-sub _basic_constructor {
-    my($class, %params) = @_;
+    my $type = $args->{type};
+    my $validator = sub {
+        my $params = shift;
 
-    _validate_constructor_params(\%params);
-    return bless \%params, $class;
-}
+        unless ($params->{data} and ref($params->{data}) eq $type) {
+            croak(qq(Expected $type ref for param 'data', but got ).ref($params->{data}));
+        }
+        unless ($params->{inplace_obj}) {
+            croak('inplace_obj is a required param');
+        }
+    };
 
-sub _validate_constructor_params {
-    my $params = shift;
+    return sub {
+        my($class, %params) = @_;
 
-    unless ($params->{data} and ref($params->{data}) eq 'ARRAY') {
-        croak(q(Expected ARRAY ref for param 'data', but got ).ref($params->{data}));
-    }
-    unless ($params->{inplace_obj}) {
-        croak('inplace_obj is a required param');
-    }
+        $validator->(\%params);
+        return bless \%params, $class;
+    };
 }
 
 sub _reencode { shift->{inplace_obj}->encode }

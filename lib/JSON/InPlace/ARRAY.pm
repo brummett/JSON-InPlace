@@ -3,10 +3,12 @@ use warnings;
 
 package JSON::InPlace::ARRAY;
 
-use JSON::InPlace::BaseHandler;
+use JSON::InPlace::BaseHandler
+    '_reencode',
+    'constructor' => { type => 'ARRAY', -as => '_constructor' };
 
 BEGIN {
-    *TIEARRAY = \&_basic_constructor;
+    *TIEARRAY = \&_constructor;
 }
 
 sub FETCH {
