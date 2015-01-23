@@ -42,9 +42,7 @@ sub new {
 sub encode {
     my $self = shift;
 
-    my $it = @$self
-            ? *{$self}{ARRAY}
-            : *{$self}{HASH};
+    my $it = *{$self}{ARRAY} || *{$self}{HASH};
 
     my $encoded = $self->codec->encode($it);
     my $ref = *{$self}{SCALAR};

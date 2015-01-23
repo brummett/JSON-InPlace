@@ -25,7 +25,7 @@ subtest 'encode array' => sub {
 };
 
 subtest 'change array' => sub {
-        plan tests => 5;
+        plan tests => 6;
 
     my $expected = [ "1", "2", "3", "4" ];
     my $string = $codec->encode($expected);
@@ -59,7 +59,9 @@ subtest 'change array' => sub {
     is($string,
        $codec->encode($expected),
        'shift element');
-}
 
-       
-    
+    @$obj = @$expected = ();
+    is($string,
+        $codec->encode($expected),
+        'clear');
+};

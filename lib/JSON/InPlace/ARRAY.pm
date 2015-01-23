@@ -47,7 +47,9 @@ sub DELETE {
 }
 
 sub CLEAR {
-    shift->{data} = [];
+    my $self = shift;
+    @{$self->{data}} = ();
+    $self->_reencode;
 }
 
 sub PUSH {
