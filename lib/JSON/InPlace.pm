@@ -17,14 +17,24 @@ sub new {
     my($class, $ref) = @_;
 
     my $data = _validate_string_ref($ref);
-    my $self = bless(Symbol::gensym(), $class);
+    my $self = _construct_object($class, $ref, $data);
+    return bless $self, $class;
+}
+
+sub _construct_object {
+    my($invocant, $ref, $data) = @_;
+
+    my $self = Symbol::gensym();
+    my $inplace_obj = ref($invocant)
+                        ? $invocant
+                        : $self;
 
     if (ref($data) eq 'ARRAY') {
         *$self = [];
-        tie @{*{$self}{ARRAY}}, 'JSON::InPlace::ARRAY', data => $data, inplace_obj => $self;
+        tie @{*{$self}{ARRAY}}, 'JSON::InPlace::ARRAY', data => $data, inplace_obj => $inplace_obj;
     } else {
         *$self = {};
-        tie %{*{$self}{HASH}}, 'JSON::InPlace::HASH', data => $data, inplace_obj => $self;
+        tie %{*{$self}{HASH}}, 'JSON::InPlace::HASH', data => $data, inplace_obj => $inplace_obj;
     }
 
     *$self = $ref;
