@@ -95,17 +95,4 @@ sub _validate_string_ref {
     return $data;
 }
 
-sub _description_of {
-    my $val = shift;
-    if (! defined $val) {
-        return '<undef>';
-    } elsif (! length $val) {
-        return '<empty string>';
-    } elsif (! ref $val) {
-        return $val;
-    } else {
-        return(ref($val) . ' ref');
-    }
-}
-
 1;
