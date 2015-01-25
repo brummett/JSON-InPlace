@@ -10,7 +10,8 @@ use JSON::InPlace::ARRAY;
 use JSON::InPlace::HASH;
 
 sub new {
-    my($class, $ref) = @_;
+    my($class, $string) = @_;
+    my $ref = \$_[1];
 
     my $data = _validate_string_ref($ref);
     return _construct_object($data, $ref);
@@ -67,10 +68,13 @@ sub _validate_string_ref {
     my $ref = shift;
 
     unless (ref $ref eq 'SCALAR') {
-        croak 'Expected SCALAR ref, but got ' . _description_of($ref);
+        croak q(Expected plain string, but got reference);
+    }
+    unless (defined $$ref) {
+        croak('Expected string, but got <undef>');
     }
     unless (length $$ref) {
-        croak('SCALAR ref must point to a non-empty string');
+        croak('Expected non-empty string');
     }
     my $error = do {
         local $@;
@@ -78,7 +82,7 @@ sub _validate_string_ref {
         $@;
     };
     if ($error) {
-        croak('SCALAR ref is not writable');
+        croak('String is not writable');
     }
 
     my $data = codec()->decode($$ref);

@@ -14,7 +14,7 @@ subtest 'hash of arrays' => sub {
     my $orig = { a => "1", b => ['1', '2'], c => ['a', 'b'] };
     my $string = $codec->encode($orig);
 
-    my $obj = JSON::InPlace->new(\$string);
+    my $obj = JSON::InPlace->new($string);
     is_deeply($obj,
               $orig,
               'object hashifies');
@@ -55,7 +55,7 @@ subtest 'array of hashes' => sub {
     my $orig = [ 0, 1, { a => 1, b => 2 } ];
     my $string = $codec->encode($orig);
 
-    my $obj = JSON::InPlace->new(\$string);
+    my $obj = JSON::InPlace->new($string);
     is_deeply($obj,
                 $orig,
                 'object arrayifies');
