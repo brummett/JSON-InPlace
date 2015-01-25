@@ -9,12 +9,13 @@ use JSON;
 my $codec = JSON->new->canonical;
 
 subtest 'encode hash' => sub {
-    plan tests => 5;
+    plan tests => 6;
 
     my $orig = { a => "1", b => "2", c => "3" };
     my $string = $codec->encode($orig);
 
     my $obj = JSON::InPlace->new(\$string);
+    isa_ok($obj, 'HASH');
     is_deeply({ %$obj },
               $orig,
               'object hashifies');

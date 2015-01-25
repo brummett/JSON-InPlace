@@ -5,10 +5,6 @@ package JSON::InPlace;
 
 use Carp qw(croak);
 use JSON;
-use Symbol;
-use overload '@{}' => '_arrayref',
-             '%{}' => '_hashref',
-             'bool' => sub { 1 };
 
 use JSON::InPlace::ARRAY;
 use JSON::InPlace::HASH;
@@ -17,27 +13,27 @@ sub new {
     my($class, $ref) = @_;
 
     my $data = _validate_string_ref($ref);
-    my $self = _construct_object($class, $ref, $data);
-    return bless $self, $class;
+    return _construct_object($data, $ref);
 }
 
 sub _construct_object {
-    my($invocant, $ref, $data) = @_;
+    my($data, $str_ref, $encoder) = @_;
 
-    my $self = Symbol::gensym();
-    my $inplace_obj = ref($invocant)
-                        ? $invocant
-                        : $self;
+    return $data unless ref $data;
 
+    $encoder = _create_encoder($data, $str_ref) unless $encoder;
+
+    my $self;
     if (ref($data) eq 'ARRAY') {
-        *$self = [];
-        tie @{*{$self}{ARRAY}}, 'JSON::InPlace::ARRAY', data => $data, inplace_obj => $inplace_obj;
+        $self = [];
+        tie @$self, 'JSON::InPlace::ARRAY', data => $data, encoder => $encoder;
+    } elsif (ref($data) eq 'HASH') {
+        $self = {};
+        tie %$self, 'JSON::InPlace::HASH', data => $data, encoder => $encoder;
     } else {
-        *$self = {};
-        tie %{*{$self}{HASH}}, 'JSON::InPlace::HASH', data => $data, inplace_obj => $inplace_obj;
+        croak('Cannot handle '.ref($data). ' reference');
     }
 
-    *$self = $ref;
     return $self;
 }
 
@@ -52,14 +48,13 @@ sub _construct_object {
     }
 }
 
-sub encode {
-    my $self = shift;
+sub _create_encoder {
+    my($data, $str_ref) = @_;
 
-    my $it = *{$self}{ARRAY} || *{$self}{HASH};
-
-    my $encoded = $self->codec->encode($it);
-    my $ref = *{$self}{SCALAR};
-    $$ref = $encoded;
+    my $codec = codec;
+    return sub {
+        $$str_ref = $codec->encode($data);
+    };
 }
 
 sub _validate_string_ref {
@@ -96,16 +91,6 @@ sub _validate_string_ref {
         croak('Expected JSON string to decode into ARRAY or HASH ref, but got ', ref($data));
     }
     return $data;
-}
-
-sub _arrayref {
-    my $self = shift;
-    return *{$self}{ARRAY};
-}
-
-sub _hashref {
-    my $self = shift;
-    return *{$self}{HASH};
 }
 
 1;

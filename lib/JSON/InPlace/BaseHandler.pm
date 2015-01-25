@@ -21,8 +21,8 @@ sub build_constructor {
         unless ($params->{data} and ref($params->{data}) eq $type) {
             croak(qq(Expected $type ref for param 'data', but got ).ref($params->{data}));
         }
-        unless ($params->{inplace_obj}) {
-            croak('inplace_obj is a required param');
+        unless ($params->{encoder}) {
+            croak('encoder is a required param');
         }
     };
 
@@ -34,6 +34,6 @@ sub build_constructor {
     };
 }
 
-sub _reencode { shift->{inplace_obj}->encode }
+sub _reencode { shift->{encoder}->() }
 
 1;

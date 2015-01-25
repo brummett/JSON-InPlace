@@ -9,12 +9,13 @@ use JSON;
 my $codec = JSON->new->canonical;
 
 subtest 'encode array' => sub {
-    plan tests => 6;
+    plan tests => 7;
 
     my $orig = [ 1, 2, 3, 4 ];
     my $string = $codec->encode($orig);
 
     my $obj = JSON::InPlace->new(\$string);
+    isa_ok($obj, 'ARRAY');
     is_deeply([ @$obj ],
               $orig,
               'object arrayifies');
