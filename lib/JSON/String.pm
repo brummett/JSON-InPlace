@@ -9,7 +9,7 @@ use JSON;
 use JSON::String::ARRAY;
 use JSON::String::HASH;
 
-sub new {
+sub tie {
     my($class, $string) = @_;
     my $ref = \$_[1];
 
@@ -32,13 +32,13 @@ sub _construct_object {
             $elt = _construct_object($elt, undef, $encoder);
         }
         $self = [];
-        tie @$self, 'JSON::String::ARRAY', data => $data, encoder => $encoder;
+        CORE::tie @$self, 'JSON::String::ARRAY', data => $data, encoder => $encoder;
     } elsif (ref($data) eq 'HASH') {
         foreach my $key ( keys %$data ) {
             $data->{$key} = _construct_object($data->{$key}, undef, $encoder);
         }
         $self = {};
-        tie %$self, 'JSON::String::HASH', data => $data, encoder => $encoder;
+        CORE::tie %$self, 'JSON::String::HASH', data => $data, encoder => $encoder;
     } else {
         croak('Cannot handle '.ref($data). ' reference');
     }

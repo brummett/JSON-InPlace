@@ -14,7 +14,7 @@ subtest 'encode hash' => sub {
     my $orig = { a => "1", b => "2", c => "3" };
     my $string = $codec->encode($orig);
 
-    my $obj = JSON::String->new($string);
+    my $obj = JSON::String->tie($string);
     isa_ok($obj, 'HASH');
     is_deeply({ %$obj },
               $orig,
@@ -30,7 +30,7 @@ subtest 'change hash' => sub {
 
     my $expected = { a => 1, b => 2, c => 3 };
     my $string = $codec->encode($expected);
-    my $obj = JSON::String->new($string);
+    my $obj = JSON::String->tie($string);
 
     $obj->{a} = $expected->{a} = 'hi';
     is($string,

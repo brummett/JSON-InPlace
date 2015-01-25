@@ -20,8 +20,8 @@ subtest 'from string' => sub {
     plan tests => 2;
 
     my $string = '[1]';
-    my $obj = JSON::String->new($string);
-    ok($obj, 'new');
+    my $obj = JSON::String->tie($string);
+    ok($obj, 'tie');
 
     $obj->[0] = 2;
     is($string, '[2]', 'changed value');
@@ -29,8 +29,8 @@ subtest 'from string' => sub {
 
 subtest 'from array elt' => sub {
     my $array = ['[1]'];
-    my $obj = JSON::String->new($array->[0]);
-    ok($obj, 'new');
+    my $obj = JSON::String->tie($array->[0]);
+    ok($obj, 'tie');
 
     $obj->[0] = 2;
     is_deeply($array,
@@ -40,8 +40,8 @@ subtest 'from array elt' => sub {
 
 subtest 'from hash value' => sub {
     my $hash = { key => '[1]' };
-    my $obj = JSON::String->new($hash->{key});
-    ok($obj, 'new');
+    my $obj = JSON::String->tie($hash->{key});
+    ok($obj, 'tie');
 
     $obj->[0] = 2;
     is_deeply($hash,
@@ -52,23 +52,23 @@ subtest 'from hash value' => sub {
 subtest 'errors' => sub {
     plan tests => 5;
 
-    throws_ok { JSON::String->new() }
+    throws_ok { JSON::String->tie() }
         expected_error 'Expected string, but got <undef>',
         'no args';
 
-    throws_ok { JSON::String->new('') }
+    throws_ok { JSON::String->tie('') }
         expected_error 'Expected non-empty string',
         'empty string';
 
-    throws_ok { JSON::String->new(q(["1"])) }
+    throws_ok { JSON::String->tie(q(["1"])) }
         expected_error 'String is not writable',
         'non-writable string';
 
-    throws_ok { my $str = []; JSON::String->new($str) }
+    throws_ok { my $str = []; JSON::String->tie($str) }
         expected_error 'Expected plain string, but got reference',
         'ref';
 
-    throws_ok { my $str = 'bad json'; JSON::String->new($str) }
+    throws_ok { my $str = 'bad json'; JSON::String->tie($str) }
         qr(malformed JSON string),
         'bad json';
 };
