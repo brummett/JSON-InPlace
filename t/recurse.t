@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 2;
+use Test::More tests => 3;
 
 use JSON::String;
 use JSON;
@@ -74,4 +74,23 @@ subtest 'array of hashes' => sub {
     is($string,
         $codec->encode($orig),
         'change newly added hash value');
+};
+
+subtest 'add multi-level' => sub {
+    plan tests => 2;
+
+    my $orig = [ 1 ];
+    my $string = $codec->encode($orig);
+    my $obj = JSON::String->tie($string);
+
+    $obj->[1] = $orig->[1] = { key => { child => { grandchild => [ 99 ] } } };
+    is($string,
+        $codec->encode($orig),
+        'Add multi-level data structure to existing object');
+
+    $obj->[1]->{key}->{child}->{grandchild}->[0]
+        = $orig->[1]->{key}->{child}->{grandchild}->[0] = 'changed';
+    is($string,
+        $codec->encode($orig),
+        'Change newly added data');
 };
