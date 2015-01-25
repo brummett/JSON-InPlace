@@ -20,6 +20,8 @@ sub new {
 sub _construct_object {
     my($data, $str_ref, $encoder) = @_;
 
+    croak('Either string ref or encoder sub expected, not both') if ($str_ref and $encoder);
+
     return $data unless ref $data;
 
     $encoder = _create_encoder($data, $str_ref) unless $encoder;
