@@ -25,9 +25,15 @@ sub _construct_object {
 
     my $self;
     if (ref($data) eq 'ARRAY') {
+        foreach my $elt ( @$data ) {
+            $elt = _construct_object($elt, undef, $encoder);
+        }
         $self = [];
         tie @$self, 'JSON::InPlace::ARRAY', data => $data, encoder => $encoder;
     } elsif (ref($data) eq 'HASH') {
+        foreach my $key ( keys %$data ) {
+            $data->{$key} = _construct_object($data->{$key}, undef, $encoder);
+        }
         $self = {};
         tie %$self, 'JSON::InPlace::HASH', data => $data, encoder => $encoder;
     } else {

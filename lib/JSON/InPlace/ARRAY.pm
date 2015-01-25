@@ -5,6 +5,7 @@ package JSON::InPlace::ARRAY;
 
 use JSON::InPlace::BaseHandler
     '_reencode',
+    '_recurse_wrap_value',
     'constructor' => { type => 'ARRAY', -as => '_constructor' };
 
 BEGIN {
@@ -18,7 +19,7 @@ sub FETCH {
 
 sub STORE {
     my($self, $idx, $val) = @_;
-    $self->{data}->[$idx] = $val;
+    $self->{data}->[$idx] = $self->_recurse_wrap_value($val);
     $self->_reencode;
     return $val;
 }

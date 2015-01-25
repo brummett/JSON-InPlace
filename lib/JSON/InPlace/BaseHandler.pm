@@ -7,9 +7,12 @@ use Carp qw(croak);
 use Sub::Exporter -setup => {
     exports => [
         '_reencode',
+        '_recurse_wrap_value',
         'constructor' => \&build_constructor,
     ]
 };
+
+require JSON::InPlace;
 
 sub build_constructor {
     my($class, $name, $args) = @_;
@@ -34,6 +37,13 @@ sub build_constructor {
     };
 }
 
-sub _reencode { shift->{encoder}->() }
+sub encoder { shift->{encoder} }
+
+sub _reencode { encoder(shift)->() }
+
+sub _recurse_wrap_value {
+    my($self, $val) = @_;
+    return JSON::InPlace::_construct_object($val, undef, encoder($self));
+}
 
 1;

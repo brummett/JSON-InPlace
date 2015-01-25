@@ -5,6 +5,7 @@ package JSON::InPlace::HASH;
 
 use JSON::InPlace::BaseHandler
     '_reencode',
+    '_recurse_wrap_value',
     'constructor' => { type => 'HASH', -as => 'constructor'};
 
 BEGIN {
@@ -18,7 +19,7 @@ sub FETCH {
 
 sub STORE {
     my($self, $key, $val) = @_;
-    $self->{data}->{$key} = $val;
+    $self->{data}->{$key} = $self->_recurse_wrap_value($val);
     $self->_reencode;
     return $val;
 }
