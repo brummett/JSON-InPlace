@@ -67,17 +67,7 @@ sub _validate_string_ref {
     my $ref = shift;
 
     unless (ref $ref eq 'SCALAR') {
-        my $error = 'Expected SCALAR ref, but got ';
-        if (! defined $ref) {
-            $error .= '<undef>';
-        } elsif (! length $ref) {
-            $error .= '<empty string>';
-        } elsif (! ref $ref) {
-            $error .= $ref;
-        } else {
-            $error .= ref($ref) . ' ref';
-        }
-        croak $error;
+        croak 'Expected SCALAR ref, but got ' . _description_of($ref);
     }
     unless (length $$ref) {
         croak('SCALAR ref must point to a non-empty string');
@@ -97,6 +87,19 @@ sub _validate_string_ref {
         croak('Expected JSON string to decode into ARRAY or HASH ref, but got ', ref($data));
     }
     return $data;
+}
+
+sub _description_of {
+    my $val = shift;
+    if (! defined $val) {
+        return '<undef>';
+    } elsif (! length $val) {
+        return '<empty string>';
+    } elsif (! ref $val) {
+        return $val;
+    } else {
+        return(ref($val) . ' ref');
+    }
 }
 
 1;
