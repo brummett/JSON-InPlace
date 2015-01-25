@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-package JSON::InPlace::BaseHandler;
+package JSON::String::BaseHandler;
 
 use Carp qw(croak);
 use Sub::Exporter -setup => {
@@ -12,7 +12,7 @@ use Sub::Exporter -setup => {
     ]
 };
 
-require JSON::InPlace;
+require JSON::String;
 
 sub build_constructor {
     my($class, $name, $args) = @_;
@@ -43,7 +43,7 @@ sub _reencode { encoder(shift)->() }
 
 sub _recurse_wrap_value {
     my($self, $val) = @_;
-    return JSON::InPlace::_construct_object($val, undef, encoder($self));
+    return JSON::String::_construct_object($val, undef, encoder($self));
 }
 
 1;

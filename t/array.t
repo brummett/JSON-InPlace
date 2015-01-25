@@ -3,7 +3,7 @@ use warnings;
 
 use Test::More tests => 2;
 
-use JSON::InPlace;
+use JSON::String;
 use JSON;
 
 my $codec = JSON->new->canonical;
@@ -14,7 +14,7 @@ subtest 'encode array' => sub {
     my $orig = [ 1, 2, 3, 4 ];
     my $string = $codec->encode($orig);
 
-    my $obj = JSON::InPlace->new($string);
+    my $obj = JSON::String->new($string);
     isa_ok($obj, 'ARRAY');
     is_deeply([ @$obj ],
               $orig,
@@ -30,7 +30,7 @@ subtest 'change array' => sub {
 
     my $expected = [ "1", "2", "3", "4" ];
     my $string = $codec->encode($expected);
-    my $obj = JSON::InPlace->new($string);
+    my $obj = JSON::String->new($string);
 
     $obj->[0] = $expected->[0] = 'hi';
     is($string,

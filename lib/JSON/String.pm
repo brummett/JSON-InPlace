@@ -1,13 +1,13 @@
 use strict;
 use warnings;
 
-package JSON::InPlace;
+package JSON::String;
 
 use Carp qw(croak);
 use JSON;
 
-use JSON::InPlace::ARRAY;
-use JSON::InPlace::HASH;
+use JSON::String::ARRAY;
+use JSON::String::HASH;
 
 sub new {
     my($class, $string) = @_;
@@ -32,13 +32,13 @@ sub _construct_object {
             $elt = _construct_object($elt, undef, $encoder);
         }
         $self = [];
-        tie @$self, 'JSON::InPlace::ARRAY', data => $data, encoder => $encoder;
+        tie @$self, 'JSON::String::ARRAY', data => $data, encoder => $encoder;
     } elsif (ref($data) eq 'HASH') {
         foreach my $key ( keys %$data ) {
             $data->{$key} = _construct_object($data->{$key}, undef, $encoder);
         }
         $self = {};
-        tie %$self, 'JSON::InPlace::HASH', data => $data, encoder => $encoder;
+        tie %$self, 'JSON::String::HASH', data => $data, encoder => $encoder;
     } else {
         croak('Cannot handle '.ref($data). ' reference');
     }

@@ -1,9 +1,9 @@
 use strict;
 use warnings;
 
-package JSON::InPlace::HASH;
+package JSON::String::HASH;
 
-use JSON::InPlace::BaseHandler
+use JSON::String::BaseHandler
     '_reencode',
     '_recurse_wrap_value',
     'constructor' => { type => 'HASH', -as => 'constructor'};

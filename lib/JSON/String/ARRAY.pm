@@ -1,9 +1,9 @@
 use strict;
 use warnings;
 
-package JSON::InPlace::ARRAY;
+package JSON::String::ARRAY;
 
-use JSON::InPlace::BaseHandler
+use JSON::String::BaseHandler
     '_reencode',
     '_recurse_wrap_value',
     'constructor' => { type => 'ARRAY', -as => '_constructor' };
