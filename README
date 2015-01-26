@@ -1,0 +1,13 @@
+JSON::String - a Perl module to automatically update a JSON string when
+a data structure changes.
+
+Example:
+
+  my $json_string = q([ 'one', 'two' ]);
+  my $data = JSON::String->tie($json_string);  # $data now holds an arrayref
+
+  $data->[1] = 'second'; # $json_string is now [ 'one', 'second' ]
+  $data->[2] = { key => 'value' }; # [ 'one', 'second', { "key": "value" } ]
+
+You can install this module from CPAN or by using Dist::Zilla
+  dzil install
