@@ -3,6 +3,8 @@ use warnings;
 
 package JSON::String::HASH;
 
+# VERSION
+
 use JSON::String::BaseHandler
     '_reencode',
     '_recurse_wrap_value',

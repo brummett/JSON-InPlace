@@ -10,6 +10,8 @@ use JSON;
 use JSON::String::ARRAY;
 use JSON::String::HASH;
 
+# VERSION
+
 sub tie {
     my($class, $string) = @_;
     my $ref = \$_[1];
