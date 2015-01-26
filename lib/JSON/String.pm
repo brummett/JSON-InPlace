@@ -40,8 +40,6 @@ sub _construct_object {
         }
         $self = {};
         CORE::tie %$self, 'JSON::String::HASH', data => $data, encoder => $encoder;
-    } else {
-        croak('Cannot handle '.ref($data). ' reference');
     }
 
     return $self;
@@ -90,7 +88,7 @@ sub _validate_string_ref {
     my $data = codec()->decode($$ref);
 
     unless (ref($data) eq 'ARRAY' or ref($data) eq 'HASH') {
-        croak('Expected JSON string to decode into ARRAY or HASH ref, but got ', ref($data));
+        croak('Cannot handle '.ref($data).' reference');
     }
     return $data;
 }
