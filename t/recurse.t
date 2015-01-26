@@ -1,10 +1,11 @@
 use strict;
 use warnings;
 
-use Test::More tests => 3;
+use Test::More tests => 4;
 
+use JSON::PP;
 use JSON::String;
-use JSON;
+use Test::Exception;
 
 my $codec = JSON->new->canonical;
 
@@ -93,4 +94,21 @@ subtest 'add multi-level' => sub {
     is($string,
         $codec->encode($orig),
         'Change newly added data');
+};
+
+subtest 'recursive' => sub {
+    plan tests => 2;
+
+    my $string = '{ "key": "value" }';
+    my $obj = JSON::String->tie($string);
+    ok($obj, 'initial data');
+
+    local $SIG{ALRM} = sub { die 'alarm' };
+    alarm(1);
+
+    throws_ok { $obj->{recurse} = $obj }
+        qr(^Error encoding data structure),
+        'Recursive data throws an exception';
+
+    alarm(0);
 };

@@ -4,6 +4,7 @@ use warnings;
 package JSON::String;
 
 use Carp qw(croak);
+our @CARP_NOT = qw(JSON::String::BaseHandler JSON::String::HASH JSON::String::ARRAY);
 use JSON;
 
 use JSON::String::ARRAY;
@@ -62,7 +63,14 @@ sub _create_encoder {
 
     my $codec = codec;
     return sub {
-        $$str_ref = $codec->encode($data);
+        my $val;
+        my $error = do {
+            local $@;
+            $val = eval { $$str_ref = $codec->encode($data) };
+            $@;
+        };
+        croak("Error encoding data structure: $error") if $error;
+        return $val;
     };
 }
 

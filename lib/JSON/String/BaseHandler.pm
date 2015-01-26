@@ -4,6 +4,8 @@ use warnings;
 package JSON::String::BaseHandler;
 
 use Carp qw(croak);
+our @CARP_NOT = qw(JSON::String::ARRAY JSON::String::HASH);
+
 use Sub::Exporter -setup => {
     exports => [
         '_reencode',
