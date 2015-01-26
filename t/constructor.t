@@ -50,7 +50,7 @@ subtest 'from hash value' => sub {
 };
 
 subtest 'errors' => sub {
-    plan tests => 5;
+    plan tests => 4;
 
     throws_ok { JSON::String->tie() }
         expected_error 'Expected string, but got <undef>',
@@ -59,10 +59,6 @@ subtest 'errors' => sub {
     throws_ok { JSON::String->tie('') }
         expected_error 'Expected non-empty string',
         'empty string';
-
-    throws_ok { JSON::String->tie(q(["1"])) }
-        expected_error 'String is not writable',
-        'non-writable string';
 
     throws_ok { my $str = []; JSON::String->tie($str) }
         expected_error 'Expected plain string, but got reference',

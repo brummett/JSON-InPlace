@@ -1,7 +1,8 @@
 use strict;
 use warnings;
 
-use Test::More tests => 2;
+use Test::More tests => 3;
+use Test::Exception;
 
 use JSON::String;
 use JSON;
@@ -65,4 +66,15 @@ subtest 'change array' => sub {
     is($string,
         $codec->encode($expected),
         'clear');
+};
+
+subtest 'non-writable string' => sub {
+    plan tests => 2;
+
+    my $obj = JSON::String->tie('["constant string"]');
+    ok($obj, 'tie to constant string');
+
+    throws_ok { $obj->[1] = 'new' }
+        qr(Modification of a read-only value attempted),
+        'modifying throws exception'
 };

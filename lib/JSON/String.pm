@@ -86,14 +86,6 @@ sub _validate_string_ref {
     unless (length $$ref) {
         croak('Expected non-empty string');
     }
-    my $error = do {
-        local $@;
-        eval { $$ref .= '' };
-        $@;
-    };
-    if ($error) {
-        croak('String is not writable');
-    }
 
     my $data = codec()->decode($$ref);
 
