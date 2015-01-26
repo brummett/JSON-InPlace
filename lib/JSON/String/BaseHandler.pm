@@ -49,3 +49,29 @@ sub _recurse_wrap_value {
 }
 
 1;
+
+=pod
+
+=head1 NAME
+
+JSON::String::BaseHandler - Common code for hashes and arrays in JSON::String
+
+=head1 DESCRIPTION
+
+This module is not intended to be used directly.  It contains code common to
+L<JSON::String::HASH> and L<JSON::String::ARRAY>.
+
+=head1 SEE ALSO
+
+L<JSON::String>, L<JSON::String::ARRAY>, L<JSON::String::HASH>
+
+=head1 AUTHOR
+
+Anthony Brummett <brummett@cpan.org>
+
+=head1 COPYRIGHT
+
+Copyright 2015, Anthony Brummett.  This module is free software. It may
+be used, redistributed and/or modified under the same terms as Perl itself.
+
+=cut

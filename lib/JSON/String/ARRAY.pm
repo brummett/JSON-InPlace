@@ -98,3 +98,31 @@ sub SPLICE {
 }
 
 1;    
+
+=pod
+
+=head1 NAME
+
+JSON::String::ARRAY - Handle arrays for JSON::String
+
+=head1 DESCRIPTION
+
+This module is not intended to be used directly.  It is used by
+L<JSON::String> to tie behavior to an array.  Any time the array is changed,
+the top-level data structure is re-encoded and the serialized representation
+saved back to the original location.
+
+=head1 SEE ALSO
+
+L<JSON::String>, L<JSON>
+
+=head1 AUTHOR
+
+Anthony Brummett <brummett@cpan.org>
+
+=head1 COPYRIGHT
+
+Copyright 2015, Anthony Brummett.  This module is free software. It may
+be used, redistributed and/or modified under the same terms as Perl itself.
+
+=cut
