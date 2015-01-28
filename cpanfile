@@ -8,6 +8,7 @@ on 'test' => sub {
   requires "JSON::PP" => "0";
   requires "Test::Exception" => "0";
   requires "Test::More" => "0";
+  requires "parent" => "0";
 };
 
 on 'configure' => sub {

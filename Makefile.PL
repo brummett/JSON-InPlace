@@ -29,9 +29,10 @@ my %WriteMakefileArgs = (
   "TEST_REQUIRES" => {
     "JSON::PP" => 0,
     "Test::Exception" => 0,
-    "Test::More" => 0
+    "Test::More" => 0,
+    "parent" => 0
   },
-  "VERSION" => "0.1.0",
+  "VERSION" => "0.1.0_01",
   "test" => {
     "TESTS" => "t/*.t"
   }
@@ -46,6 +47,7 @@ my %FallbackPrereqs = (
   "Sub::Exporter" => 0,
   "Test::Exception" => 0,
   "Test::More" => 0,
+  "parent" => 0,
   "strict" => 0,
   "warnings" => 0
 );
