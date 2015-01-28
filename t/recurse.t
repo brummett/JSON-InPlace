@@ -51,30 +51,41 @@ subtest 'hash of arrays' => sub {
 };
 
 subtest 'array of hashes' => sub {
-    plan tests => 4;
+    plan tests => my $count = 10;
+    for (my $i = 0; $i < $count; $i++) {
+        # Try several times to try and trip a hash randomization bug
+        my $picker = make_key_picker();
 
-    my $orig = [ 0, 1, { a => 1, b => 2 } ];
-    my $string = $codec->encode($orig);
+        subtest "iteration $i" => sub {
+            plan tests => 4;
 
-    my $obj = JSON::String->tie($string);
-    is_deeply($obj,
-                $orig,
-                'object arrayifies');
+            my($key1, $key2) = map { $picker->() } qw(1 2);
+            my $orig = [ 0, 1, { $key1 => 1, $key2 => 2 } ];
+            my $string = $codec->encode($orig);
 
-    $obj->[2]->{a} = $orig->[2]->{a} = 'changed';
-    is($string,
-        $codec->encode($orig),
-        'change nested hash value');
+            my $obj = JSON::String->tie($string);
+            is_deeply($obj,
+                        $orig,
+                        'object arrayifies');
 
-    $obj->[0] = $orig->[0] = { new => 'hash' };
-    is($string,
-        $codec->encode($orig),
-        'change string value in array to hashref');
+            $obj->[2]->{a} = $orig->[2]->{a} = 'changed';
+            is($string,
+                $codec->encode($orig),
+                'change nested hash value');
 
-    $obj->[0]->{new} = $orig->[0]->{new} = 'changed hash value';
-    is($string,
-        $codec->encode($orig),
-        'change newly added hash value');
+            $obj->[0] = $orig->[0] = { new => 'hash' };
+            is($string,
+                $codec->encode($orig),
+                'change string value in array to hashref');
+
+            my $key3 = $picker->();
+            $obj->[0]->{$key3} = $orig->[0]->{$key3} = 'changed hash value';
+            is($string,
+                $codec->encode($orig),
+                'change newly added hash value')
+                or diag("Hash keys were $key1, $key2, $key3");
+        };
+    }
 };
 
 subtest 'add multi-level' => sub {
@@ -112,3 +123,10 @@ subtest 'recursive' => sub {
 
     alarm(0);
 };
+
+sub make_key_picker {
+    my @letters = ('a' .. 'z');
+    return sub {
+        return splice(@letters, int(rand(scalar(@letters))), 1);
+    }
+}

@@ -11,9 +11,9 @@ sub expected_error {
 
     my(undef, $file, $line) = caller();
     $line--;
-    my $expected_error = quotemeta(sprintf('%s at %s line %s.',
+    my $expected_error = quotemeta(sprintf('%s at %s line %s',
                                     $expected, $file, $line));
-    return qr(^$expected_error$);
+    return qr(^$expected_error);
 }
 
 subtest 'from string' => sub {
