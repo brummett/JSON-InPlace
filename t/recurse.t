@@ -83,7 +83,7 @@ subtest 'array of hashes' => sub {
             is($string,
                 $codec->encode($orig),
                 'change newly added hash value')
-                or diag("Hash keys were $key1, $key2, $key3");
+                or diag("Hash keys were $key1, $key2, $key3. Encoder canonical is: ".JSON::String->encoder->get_canonical);
         };
     }
 };
