@@ -69,20 +69,20 @@ subtest 'array of hashes' => sub {
                         'object arrayifies');
 
             $obj->[2]->{a} = $orig->[2]->{a} = 'changed';
-            is($string,
-                $codec->encode($orig),
-                'change nested hash value');
+            is_deeply($codec->decode($string),
+                      $orig,
+                      'change nested hash value');
 
             $obj->[0] = $orig->[0] = { new => 'hash' };
-            is($string,
-                $codec->encode($orig),
-                'change string value in array to hashref');
+            is_deeply($codec->decode($string),
+                      $orig,
+                      'change string value in array to hashref');
 
             my $key3 = $picker->();
             $obj->[0]->{$key3} = $orig->[0]->{$key3} = 'changed hash value';
-            is($string,
-                $codec->encode($orig),
-                'change newly added hash value')
+            is_deeply($codec->decode($string),
+                      $orig,
+                      'change newly added hash value')
                 or diag("Hash keys were $key1, $key2, $key3. Codec canonical is: ".JSON::String->codec->get_canonical);
         };
     }
