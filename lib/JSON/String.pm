@@ -105,18 +105,26 @@ JSON::String - Automatically change a JSON string when a data structure changes
 
 =head1 SYNOPSIS
 
+  # Basic use
   my $json_string = q({ a: 1, b: 2, c: [ 4, 5, 6 ] });
   my $data = JSON::String->tie($json_string);
-
   @{$data->{c}} = qw(this data changed);
   # $json_string now contains '{ a: 1, b: 2, c: ["this", "data", "changed"] }'
 
+  # Useful when the JSON gets saved somewhere more permanent
+  my $object = load_object_from_database();
+  my $decoded_struct = JSON::String->tie($object->{json_attribute});
+  possibly_change_data($decoded_struct);  # json_attribute will change if the struct changes
+  save_object_to_database($object) if ($object->has_changes);
+
 =head1 DESCRIPTION
 
-This module constructs a data structure that, when changed, automatically
-changes the original string's contents to match the new data.  Hashrefs and
-arrayrefs are supported, and their values can be scalars, hashrefs or
-arrayrefs.
+This module constructs a data structure from a JSON string that, when changed,
+automatically changes the original string's contents to match the new data.
+Hashrefs and arrayrefs are supported, and their values can be scalars,
+hashrefs or arrayrefs.  This is useful in cases where the JSON string is
+persisted in a database, and needs to be updated if the underlying data
+ever changes.
 
 The JSON format does not handle recursive data, and an exception will be
 thrown if the data structure is changed such that it has a loop.
